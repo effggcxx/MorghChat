@@ -17,6 +17,7 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import net.luckperms.api.LuckPermsProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -108,6 +109,7 @@ public final class GlobalChatManager {
     }
     public Channel get(Player player) { return active.getOrDefault(player.getUniqueId(), Channel.LOCAL); }
     public void set(Player player, Channel channel) { active.put(player.getUniqueId(), channel == null ? Channel.LOCAL : channel); savePlayerState(player.getUniqueId()); }
+    public void announceChannel(Player player) { plugin.getMessagesManager().send(player, "channel.changed", "<shadow:#000000><bold><gray>Channel</gray> <dark_gray>»</dark_gray> <aqua>{channel}</aqua></bold></shadow> <gray>You are now chatting in this channel.</gray>", Map.of("channel", get(player).display())); }
     public void toggle(Player player, Channel channel) { set(player, get(player) == channel ? Channel.LOCAL : channel); }
     public boolean canUse(Player player, Channel channel) { return channel == Channel.LOCAL || player.hasPermission(channel.permission()); }
     public boolean isHidden(Player player, Channel channel) { Set<Channel> channels = hidden.get(player.getUniqueId()); return channels != null && channels.contains(channel); }
@@ -242,15 +244,33 @@ public final class GlobalChatManager {
         String resolved = format.replace("{channel}", channel.display()).replace("{server}", server).replace("{player}", player);
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) resolved = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(placeholderPlayer, resolved);
         TagResolver resolver = TagResolver.builder().resolver(StandardTags.color()).resolver(StandardTags.decorations()).resolver(StandardTags.gradient())
-                .resolver(TagResolver.resolver("tc_prefix", net.kyori.adventure.text.minimessage.tag.Tag.inserting(legacy.deserialize(prefix))))
+                .resolver(TagResolver.resolver("tc_prefix", net.kyori.adventure.text.minimessage.tag.Tag.inserting(deserializePrefix(prefix))))
                 .resolver(TagResolver.resolver("tc_message", net.kyori.adventure.text.minimessage.tag.Tag.inserting(message))).build();
         String miniFormat = resolved.replace("{prefix}", "<tc_prefix>").replace("{message}", "<tc_message>");
         try { return miniMessage.deserialize(miniFormat, resolver); } catch (RuntimeException ignored) { return legacy.deserialize(resolved.replace("{prefix}", prefix)); }
     }
+    private Component deserializePrefix(String prefix) {
+        if (prefix == null || prefix.isEmpty()) return Component.empty();
+        if (prefix.contains("<") && prefix.contains(">")) {
+            try { return miniMessage.deserialize(prefix); } catch (RuntimeException ignored) { }
+        }
+        return legacy.deserialize(prefix);
+    }
+
     private String prefix(Player player) {
         String template = plugin.getPluginConfig().getString("format.prefix-placeholder", "%luckperms_prefix% ");
-        if (template == null || template.isEmpty() || !Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) return "";
-        return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, template);
+        if (template == null || template.isEmpty()) return "";
+        if (template.contains("%luckperms_prefix%")) {
+            String luckPermsPrefix = null;
+            if (Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) {
+                try { luckPermsPrefix = LuckPermsProvider.get().getPlayerAdapter(Player.class).getMetaData(player).getPrefix(); }
+                catch (IllegalStateException ignored) { }
+            }
+            if (luckPermsPrefix != null) template = template.replace("%luckperms_prefix%", luckPermsPrefix);
+            else if (!Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) template = template.replace("%luckperms_prefix%", "");
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) template = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, template);
+        return template;
     }
     private void forwardChat(Player player, Channel channel, UUID senderId, String senderName, String rawMessage, Component resolvedOutput, boolean mentionsAllowed) {
         try { ByteArrayOutputStream bytes = new ByteArrayOutputStream(); DataOutputStream data = new DataOutputStream(bytes); data.writeInt(PROTOCOL_VERSION); data.writeUTF(PacketKind.CHAT.name()); data.writeUTF(channel.id()); data.writeUTF(senderId.toString()); data.writeUTF(senderName); data.writeBoolean(mentionsAllowed); data.writeUTF(rawMessage); data.writeUTF(gson.serialize(resolvedOutput)); data.flush(); plugin.getNetworkMessenger().forwardAll(player, bytes.toByteArray()); }

@@ -37,6 +37,12 @@ chat:
   mute-state-muted: "muted"
   mute-state-unmuted: "unmuted"
   management-no-permission: "<red>You don't have permission to manage chat mutes.</red>"
+mute:
+  usage: "<red>Usage: /{action} <player|channel> [channel]</red>"
+  player-muted: "<green>{player} has been {state} in {channel} chat.</green>"
+  channel-muted: "<green>{channel} chat has been {state} globally.</green>"
+  unknown-target: "<red>Unknown player. The player must have joined this server before.</red>"
+  invalid-channel: "<red>Unknown channel. Choose local, global, staff, donator, admin, or highrank.</red>
 admin:
   title: "<gold><bold>MorghChat</bold></gold>"
   info-version: "<gray>Version: <white>{version}</white>"
@@ -88,6 +94,8 @@ help:
     - "<yellow>/spy <gray>- Toggle the local spy sections you are permitted to use."
     - "<yellow>/clearchat <channel> <gray>- Clear a channel's visible chat."
   page-3:
+    - "<yellow>/mute <player|channel> [channel] <gray>- Mute a player or an entire channel."
+    - "<yellow>/unmute <player|channel> [channel] <gray>- Remove a chat mute."
     - "<yellow>/channelmutelist <gray>- View channel mutes."
     - "<yellow>/stafflist <gray>- List visible staff members."
     - "<yellow>/donatorlist <gray>- List visible donators."

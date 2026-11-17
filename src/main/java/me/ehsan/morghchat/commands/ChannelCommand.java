@@ -27,7 +27,7 @@ public class ChannelCommand implements CommandExecutor {
         if (channel == null) { plugin.getMessagesManager().send(player, "errors.unknown-channel", "<red>Unknown channel."); return true; }
         if (!plugin.getGlobalChatManager().canUse(player, channel)) { plugin.getMessagesManager().send(player, "errors.no-channel-permission", "<red>You don't have permission to use that chat channel."); return true; }
         plugin.getGlobalChatManager().set(player, channel);
-        plugin.getMessagesManager().send(player, "channel.changed", "<green>Chat channel set to <yellow>{channel}</yellow><green>.</green>", Map.of("channel", channel.id()));
+        plugin.getGlobalChatManager().announceChannel(player);
         return true;
     }
 }

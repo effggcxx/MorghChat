@@ -24,7 +24,7 @@ public final class ChatChannelCommand implements CommandExecutor {
         if (dedicatedChannel != null) {
             if (!channels.canUse(player, dedicatedChannel)) { plugin.getMessagesManager().send(player, "errors.no-channel-permission", "<red>You don't have permission to use that chat channel."); return true; }
             channels.toggle(player, dedicatedChannel);
-            plugin.getMessagesManager().send(player, "channel.toggled", "<green>Chat channel: <yellow>{channel}</yellow><green>.</green>", Map.of("channel", channels.get(player).display())); return true;
+            channels.announceChannel(player); return true;
         }
         if (args.length == 0) {
             plugin.getMessagesManager().send(player, "channel.current", "<gray>Current channel: <yellow>{channel}</yellow>", Map.of("channel", channels.get(player).id()));
