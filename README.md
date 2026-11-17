@@ -60,7 +60,7 @@ storage:
 
 On another backend, `network.server-name` might be `skyblock`, while the database remains `morghchat`.
 
-The shared database is intentional: it provides one source of truth for persistent player state and the cross-backend fallback queue. Backend-specific state is identified using the network server name where necessary.
+The shared database is intentional: it provides one source of truth for persistent player state. The legacy Bungee transport can additionally use its MySQL fallback queue; TCP mode routes live packets through the Velocity companion instead. Backend-specific state is identified using the network server name where necessary.
 
 ## Channels
 
