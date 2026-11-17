@@ -1,1 +1,2 @@
 rootProject.name = 'MorghChat'
+include 'velocity'
