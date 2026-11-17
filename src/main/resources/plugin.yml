@@ -53,14 +53,6 @@ commands:
     description: List globally muted channels and muted players per channel
     usage: /channelmutelist [page]
     aliases: [cml, mutelist]
-  mute:
-    description: Mute a chat channel globally or mute a player in a channel
-    usage: /mute <player|channel> [channel]
-    aliases: [chatmute]
-  unmute:
-    description: Remove a global channel mute or a player's channel mute
-    usage: /unmute <player|channel> [channel]
-    aliases: [chatunmute]
   spy:
     description: Monitor commands, private messages, anvils, signs and books locally
     usage: /spy <on|off|status|toggle> [commands|private-messages|anvils|signs|books]
@@ -92,9 +84,6 @@ commands:
 permissions:
   morghchat.admin:
     description: Access to admin/reload commands
-    default: op
-  morghchat.mute:
-    description: Allows managing global and per-player chat mutes
     default: op
   morghchat.chatcolor:
     description: Allows using the Chat Color GUI and applying chat colors

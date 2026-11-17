@@ -208,7 +208,6 @@ Run `/morghchat help` in-game for the current server's complete command and perm
 ### Administration
 
 - `morghchat.admin`
-- `morghchat.mute`
 - `morghchat.msg`
 - `morghchat.ignore`
 - `morghchat.mention`
