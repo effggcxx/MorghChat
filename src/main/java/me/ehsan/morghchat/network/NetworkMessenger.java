@@ -29,7 +29,7 @@ public final class NetworkMessenger implements PluginMessageListener {
                 plugin.getLogger().severe("TCP transport is selected, but network.tcp host/port/secret are invalid. Network messaging is disabled.");
                 tcpClient = null;
             } else {
-                tcpClient = new TcpNetworkClient(plugin, host, port, secret);
+                tcpClient = new TcpNetworkClient(plugin, host, port, secret, this::dispatchTcp);
             }
         } else {
             tcpClient = null;
