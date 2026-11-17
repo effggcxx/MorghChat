@@ -117,7 +117,7 @@ final class TcpBridgeServer implements AutoCloseable {
     @Override
     public void close() {
         running.set(false);
-        closeQuietly(serverSocket);
+        try { if (serverSocket != null) serverSocket.close(); } catch (IOException ignored) { }
         for (Client client : clients) client.close();
         clients.clear();
         workers.shutdownNow();
