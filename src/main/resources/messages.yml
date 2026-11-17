@@ -1,10 +1,10 @@
-# ThunderChat messages
+# MorghChat messages
 # Every entry in this file is player-facing and can be customized.
 # MiniMessage is supported throughout this file.
 # Placeholders use {name} syntax. Unknown placeholders remain unchanged.
 # Behavior belongs in config.yml; player-facing text and display formats belong here.
 
-prefix: "<gold><bold>ThunderChat</bold></gold> <dark_gray>»</dark_gray>"
+prefix: "<gold><bold>MorghChat</bold></gold> <dark_gray>»</dark_gray>"
 errors:
   player-only: "<red>Only players can use this command.</red>"
   no-permission: "<red>You don't have permission to use this command.</red>"
@@ -38,12 +38,12 @@ chat:
   mute-state-unmuted: "unmuted"
   management-no-permission: "<red>You don't have permission to manage chat mutes.</red>"
 admin:
-  title: "<gold><bold>ThunderChat</bold></gold>"
+  title: "<gold><bold>MorghChat</bold></gold>"
   info-version: "<gray>Version: <white>{version}</white>"
   info-status: "<gray>Channels: <white>{channels}</white> <gray>| Filters: <white>{filters}</white>"
-  info-reload: "<gray>Use <white>/thunderchat reload</white> <gray>to reload configuration."
+  info-reload: "<gray>Use <white>/morghchat reload</white> <gray>to reload configuration."
   reload-success: "<green>Configuration and persistent mute data reloaded.</green>"
-  usage: "<red>Usage: /thunderchat <reload|info|help> [page]</red>"
+  usage: "<red>Usage: /morghchat <reload|info|help> [page]</red>"
   filters-enabled: "enabled"
   filters-disabled: "disabled"
 spy:
@@ -69,7 +69,7 @@ interactive:
   limit-reached: "<red>Please do not use an excessive amount of interactive placeholders.</red>"
   player-hover: "<gray>World: <white>{world}</white>\n<gray>Ping: <white>{ping}ms</white>\n<gray>Health: <white>{health}</white>"
 help:
-  title: "<gold><bold>ThunderChat Help</bold></gold> <dark_gray>({page}/{max_page})</dark_gray>"
+  title: "<gold><bold>MorghChat Help</bold></gold> <dark_gray>({page}/{max_page})</dark_gray>"
   max-page: 3
   page-1:
     - "<yellow>/chat <gray>- Manage your active/local chat and channel administration."
@@ -93,7 +93,7 @@ help:
     - "<yellow>/donatorlist <gray>- List visible donators."
     - "<yellow>/adminlist <gray>- List visible admins."
     - "<yellow>/highranklist <gray>- List visible high-rank members."
-    - "<gray>Use <white>/thunderchat help <page></white> to browse pages."
+    - "<gray>Use <white>/morghchat help <page></white> to browse pages."
 formats:
   # Designed to stay visually distinct from normal chat: bold + a full black shadow + subdued gray body.
   alert: "<shadow:#000000><bold><red>ALERT</red> <dark_gray>•</dark_gray> <red>{type}</red> <dark_gray>|</dark_gray> <gray>{server}</gray> <dark_gray>|</dark_gray> <white>{player}</white></bold></shadow> <shadow:#000000><gray>{message}</gray></shadow>"

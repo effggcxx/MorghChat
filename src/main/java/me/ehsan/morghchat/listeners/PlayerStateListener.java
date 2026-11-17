@@ -1,0 +1,27 @@
+package me.ehsan.morghchat.listeners;
+
+import me.ehsan.morghchat.MorghChat;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+/** Restores player state and drains network packets queued while this backend was empty. */
+public final class PlayerStateListener implements Listener {
+    private final MorghChat plugin;
+    public PlayerStateListener(MorghChat plugin) { this.plugin = plugin; }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        plugin.getGlobalChatManager().restorePlayer(event.getPlayer());
+        plugin.getNetworkMessenger().drainQueuedPackets();
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        var id = event.getPlayer().getUniqueId();
+        plugin.getGlobalChatManager().clearPlayer(id);
+        plugin.getFilterManager().clear(id);
+        plugin.getMessageManager().clearPlayer(id);
+    }
+}

@@ -1,4 +1,4 @@
-# ThunderChat configuration
+# MorghChat configuration
 # Channel formats support {channel}, {server}, {prefix}, {player}, {message}
 # plus any PlaceholderAPI placeholder. All player-facing formats use MiniMessage.
 format:
@@ -22,15 +22,15 @@ network:
 channels:
   default: local
   global:
-    permission: thunderchat.channel.global
+    permission: morghchat.channel.global
   donator:
-    permission: thunderchat.channel.donator
+    permission: morghchat.channel.donator
   staff:
-    permission: thunderchat.channel.staff
+    permission: morghchat.channel.staff
   admin:
-    permission: thunderchat.channel.admin
+    permission: morghchat.channel.admin
   highrank:
-    permission: thunderchat.channel.highrank
+    permission: morghchat.channel.highrank
 private-messages:
   enabled: true
   log-to-console: false
@@ -156,7 +156,7 @@ storage:
   mysql:
     host: "127.0.0.1"
     port: 3306
-    database: "thunderchat"
+    database: "morghchat"
     username: "root"
     password: "change-me"
     pool-size: 4

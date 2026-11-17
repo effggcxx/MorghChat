@@ -1,7 +1,7 @@
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
 
-ThunderChat is licensed under the GNU General Public License version 3 (GPLv3).
+MorghChat is licensed under the GNU General Public License version 3 (GPLv3).
 
 Copyright (C) 2026 Ehsan
 
@@ -22,5 +22,5 @@ The complete, authoritative GPLv3 text is maintained by the Free Software
 Foundation at:
 https://www.gnu.org/licenses/gpl-3.0.html
 
-ThunderChat also incorporates/adapts GPLv3-licensed InteractiveChat-derived
+MorghChat also incorporates/adapts GPLv3-licensed InteractiveChat-derived
 interactive-chat functionality. See THIRD_PARTY_NOTICES.md for attribution.

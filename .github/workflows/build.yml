@@ -1,4 +1,4 @@
-name: Build ThunderChat
+name: Build MorghChat
 
 on:
   push:
@@ -33,5 +33,5 @@ jobs:
       - name: Upload plugin JAR
         uses: actions/upload-artifact@v4
         with:
-          name: ThunderChat
+          name: MorghChat
           path: build/libs/*.jar

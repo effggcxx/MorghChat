@@ -1,28 +1,28 @@
-# ThunderChat Interactive Chat
+# MorghChat Interactive Chat
 
-ThunderChat now provides a Paper-native interactive-chat subsystem inspired by the feature set of LOOHP InteractiveChat.
+MorghChat now provides a Paper-native interactive-chat subsystem inspired by the feature set of LOOHP InteractiveChat.
 
 ## Built-in placeholders
 
 | Placeholder | Permission | Result |
 |---|---|---|
-| `[item]`, `[i]` | `thunderchat.interactive.item` | Interactive main-hand item with hover details and optional item preview click. |
-| `[inv]`, `[inventory]` | `thunderchat.interactive.inventory` | Read-only inventory snapshot. |
-| `[ender]`, `[e]` | `thunderchat.interactive.ender` | Read-only Ender Chest snapshot. |
-| `[pos]` | `thunderchat.interactive.position` | Current world and block coordinates. |
-| `[ping]` | `thunderchat.interactive.ping` | Current player ping. |
+| `[item]`, `[i]` | `morghchat.interactive.item` | Interactive main-hand item with hover details and optional item preview click. |
+| `[inv]`, `[inventory]` | `morghchat.interactive.inventory` | Read-only inventory snapshot. |
+| `[ender]`, `[e]` | `morghchat.interactive.ender` | Read-only Ender Chest snapshot. |
+| `[pos]` | `morghchat.interactive.position` | Current world and block coordinates. |
+| `[ping]` | `morghchat.interactive.ping` | Current player ping. |
 
-`thunderchat.interactive.*` grants the complete built-in feature set.
+`morghchat.interactive.*` grants the complete built-in feature set.
 
 ## Player-name interaction
 
-With `thunderchat.interactive.player`, matching online player names become interactive. Hovering shows configurable world, ping and health information; clicking suggests `/msg <player>`.
+With `morghchat.interactive.player`, matching online player names become interactive. Hovering shows configurable world, ping and health information; clicking suggests `/msg <player>`.
 
 The behavior is intentionally limited to online players on the current backend. This avoids pretending that a backend-local Bukkit Player object exists for a remote server.
 
 ## Command interaction
 
-With `thunderchat.interactive.commands`, slash commands appearing in chat can be rendered as clickable/suggestable command components. Configure the visible format and hover text under `interactive.commands` in `config.yml`.
+With `morghchat.interactive.commands`, slash commands appearing in chat can be rendered as clickable/suggestable command components. Configure the visible format and hover text under `interactive.commands` in `config.yml`.
 
 ## Custom placeholders
 
@@ -40,8 +40,8 @@ interactive:
 - `keyword` is a Java regular expression.
 - `replace` can use PlaceholderAPI when PlaceholderAPI is installed.
 - `cooldown` is per-player and measured in seconds.
-- Use `thunderchat.interactive.custom.<id>` for a specific custom placeholder.
-- `thunderchat.interactive.custom.*` grants all configured custom placeholders.
+- Use `morghchat.interactive.custom.<id>` for a specific custom placeholder.
+- `morghchat.interactive.custom.*` grants all configured custom placeholders.
 
 ## Limits and cooldowns
 
@@ -51,7 +51,7 @@ The individual item/inventory/ender cooldown settings are reserved for per-place
 
 ## Inventory safety
 
-Inventory, Ender Chest and item previews are **read-only snapshots**. ThunderChat registers a dedicated inventory holder and cancels both click and drag events for those views. The displayed items are clones, so clicking an `[inv]` link cannot steal or modify the source player's items.
+Inventory, Ender Chest and item previews are **read-only snapshots**. MorghChat registers a dedicated inventory holder and cancels both click and drag events for those views. The displayed items are clones, so clicking an `[inv]` link cannot steal or modify the source player's items.
 
 ## Network behavior
 
@@ -61,7 +61,7 @@ Viewer actions that open a Bukkit inventory still require the referenced player 
 
 ## Configuration
 
-All feature switches and behavior belong in `config.yml`; player-facing text belongs in `messages.yml`. This follows ThunderChat's general rule that user-visible output should not be hardcoded.
+All feature switches and behavior belong in `config.yml`; player-facing text belongs in `messages.yml`. This follows MorghChat's general rule that user-visible output should not be hardcoded.
 
 ## Attribution
 

@@ -1,10 +1,10 @@
-# ThunderChat
+# MorghChat
 
 A performance-focused Paper 1.21.11+ chat plugin for proxy networks.
 
-ThunderChat provides local gamemode chat, permission-gated network channels, moderation filters, private messaging, ignore, local spy tools, mentions, per-channel mutes, MiniMessage Chat Color, and InteractiveChat-style interactive placeholders.
+MorghChat provides local gamemode chat, permission-gated network channels, moderation filters, private messaging, ignore, local spy tools, mentions, per-channel mutes, MiniMessage Chat Color, and InteractiveChat-style interactive placeholders.
 
-> **Development status:** ThunderChat is currently under active development. Back up your server data before upgrading development builds.
+> **Development status:** MorghChat is currently under active development. Back up your server data before upgrading development builds.
 
 ## Requirements
 
@@ -15,17 +15,17 @@ ThunderChat provides local gamemode chat, permission-gated network channels, mod
 
 ## Quick start
 
-1. Install ThunderChat on **every Paper backend** behind your Velocity/Bungee proxy.
+1. Install MorghChat on **every Paper backend** behind your Velocity/Bungee proxy.
 2. Start the servers once so the default configuration files are generated.
 3. Configure the **same MySQL connection/database** in `config.yml` on every backend.
-4. Give the MySQL account permission to create the configured database/tables. ThunderChat creates its schema and tables automatically.
+4. Give the MySQL account permission to create the configured database/tables. MorghChat creates its schema and tables automatically.
 5. Give every backend a **unique `network.server-name`**. This is a backend identifier, not a database name.
 6. Restart after changing major storage/network settings.
 7. Grant players the channel/filter/feature permissions they need.
 
-### One network = one shared ThunderChat database
+### One network = one shared MorghChat database
 
-A Velocity network with `lobby`, `survival`, `skyblock`, etc. does **not** need a separate database for each server. Every ThunderChat backend should normally point at the same `thunderchat` database.
+A Velocity network with `lobby`, `survival`, `skyblock`, etc. does **not** need a separate database for each server. Every MorghChat backend should normally point at the same `morghchat` database.
 
 Example:
 
@@ -39,7 +39,7 @@ Example:
           │            │            │
           └────────────┼────────────┘
                        │
-                MySQL: thunderchat
+                MySQL: morghchat
 ```
 
 Each backend changes only its `network.server-name`:
@@ -53,12 +53,12 @@ storage:
   mysql:
     host: "127.0.0.1"
     port: 3306
-    database: "thunderchat"
+    database: "morghchat"
     username: "root"
     password: "change-me"
 ```
 
-On another backend, `network.server-name` might be `skyblock`, while the database remains `thunderchat`.
+On another backend, `network.server-name` might be `skyblock`, while the database remains `morghchat`.
 
 The shared database is intentional: it provides one source of truth for persistent player state and the cross-backend fallback queue. Backend-specific state is identified using the network server name where necessary.
 
@@ -69,11 +69,11 @@ The built-in channels are:
 | Channel | Purpose | Typical permission |
 |---|---|---|
 | `local` | Default gamemode/backend chat | configured local access |
-| `global` | Network-wide chat | `thunderchat.channel.global` |
-| `staff` | Staff-only chat | `thunderchat.channel.staff` |
-| `donator` | Donator chat | `thunderchat.channel.donator` |
-| `admin` | Admin chat | `thunderchat.channel.admin` |
-| `highrank` | High-rank chat | `thunderchat.channel.highrank` |
+| `global` | Network-wide chat | `morghchat.channel.global` |
+| `staff` | Staff-only chat | `morghchat.channel.staff` |
+| `donator` | Donator chat | `morghchat.channel.donator` |
+| `admin` | Admin chat | `morghchat.channel.admin` |
+| `highrank` | High-rank chat | `morghchat.channel.highrank` |
 
 Players start in `local`. `/channel <name>` switches the active channel. `/sc`, `/dc`, `/ac`, `/hc`, and `/gc` toggle their respective channels; disabling a toggle returns the player to local chat.
 
@@ -83,7 +83,7 @@ Channel permissions and formats are configurable. See `config.yml` and `messages
 
 ## MySQL persistence
 
-ThunderChat uses MySQL with HikariCP connection pooling.
+MorghChat uses MySQL with HikariCP connection pooling.
 
 The persistence path is:
 
@@ -105,9 +105,9 @@ Persisted state includes channel state, mutes, ignores, spy settings and Chat Co
 
 ### Database setup
 
-ThunderChat creates the configured database and tables automatically when the MySQL account has sufficient privileges. You do **not** need to manually create ThunderChat tables.
+MorghChat creates the configured database and tables automatically when the MySQL account has sufficient privileges. You do **not** need to manually create MorghChat tables.
 
-For a proxy network, configure the same database connection on every backend. Do not create `thunderchat_survival`, `thunderchat_skyblock`, etc. unless you intentionally want completely isolated ThunderChat installations.
+For a proxy network, configure the same database connection on every backend. Do not create `morghchat_survival`, `morghchat_skyblock`, etc. unless you intentionally want completely isolated MorghChat installations.
 
 ```yaml
 storage:
@@ -115,7 +115,7 @@ storage:
   mysql:
     host: "127.0.0.1"
     port: 3306
-    database: "thunderchat"
+    database: "morghchat"
     username: "root"
     password: "change-me"
     pool-size: 4
@@ -127,28 +127,28 @@ Each backend has its own Hikari connection pool, but those pools connect to the 
 
 These two settings have different jobs:
 
-- `storage.mysql.database` = the shared persistent ThunderChat database.
+- `storage.mysql.database` = the shared persistent MorghChat database.
 - `network.server-name` = the identity of this individual Paper backend.
 
 For example:
 
 | Backend | `network.server-name` | `storage.mysql.database` |
 |---|---|---|
-| Survival | `survival` | `thunderchat` |
-| Skyblock | `skyblock` | `thunderchat` |
-| BedWars | `bedwars` | `thunderchat` |
+| Survival | `survival` | `morghchat` |
+| Skyblock | `skyblock` | `morghchat` |
+| BedWars | `bedwars` | `morghchat` |
 
 Never use the backend name as the database name unless you deliberately want isolated data.
 
 ## Network architecture
 
-ThunderChat uses a unified versioned `ThunderChat` network dispatcher rather than separate incoming listeners in individual managers.
+MorghChat uses a unified versioned `MorghChat` network dispatcher rather than separate incoming listeners in individual managers.
 
 Network packets cover chat, clear, mute, alerts, ignore and private messages. Packet identifiers prevent duplicate delivery when a live packet and its queued fallback both exist.
 
 ### Empty backends
 
-Bungee-style backend messaging traditionally needs an online player to carry a plugin message. ThunderChat uses the shared MySQL queue as a fallback for configured backend servers.
+Bungee-style backend messaging traditionally needs an online player to carry a plugin message. MorghChat uses the shared MySQL queue as a fallback for configured backend servers.
 
 ```yaml
 network:
@@ -190,61 +190,61 @@ A future proxy-side implementation could remove the remaining dependency on back
 | `/spy <on\|off\|toggle\|status>` | Control local spy sections |
 | `/chatcolor`, `/ccolor` | Open Chat Color GUI |
 | `/chatcolor clear` | Reset formatting |
-| `/thunderchat help [page]` | Show paginated help |
-| `/thunderchat reload` | Reload supported configuration |
+| `/morghchat help [page]` | Show paginated help |
+| `/morghchat reload` | Reload supported configuration |
 
-Run `/thunderchat help` in-game for the current server's complete command and permission help.
+Run `/morghchat help` in-game for the current server's complete command and permission help.
 
 ## Permissions
 
 ### Channels
 
-- `thunderchat.channel.global`
-- `thunderchat.channel.staff`
-- `thunderchat.channel.donator`
-- `thunderchat.channel.admin`
-- `thunderchat.channel.highrank`
+- `morghchat.channel.global`
+- `morghchat.channel.staff`
+- `morghchat.channel.donator`
+- `morghchat.channel.admin`
+- `morghchat.channel.highrank`
 
 ### Administration
 
-- `thunderchat.admin`
-- `thunderchat.msg`
-- `thunderchat.ignore`
-- `thunderchat.mention`
+- `morghchat.admin`
+- `morghchat.msg`
+- `morghchat.ignore`
+- `morghchat.mention`
 
 ### Clear chat
 
-- `thunderchat.clearchat.*`
-- `thunderchat.clearchat.<channel>`
-- `thunderchat.bypass.clearchat.*`
-- `thunderchat.bypass.clearchat.<channel>`
+- `morghchat.clearchat.*`
+- `morghchat.clearchat.<channel>`
+- `morghchat.bypass.clearchat.*`
+- `morghchat.bypass.clearchat.<channel>`
 
 ### Mute bypass
 
-- `thunderchat.bypass.mute`
-- `thunderchat.bypass.mute.<channel>`
+- `morghchat.bypass.mute`
+- `morghchat.bypass.mute.<channel>`
 
 ### Filters
 
-- `thunderchat.bypass.filter`
-- `thunderchat.bypass.spam`
-- `thunderchat.bypass.flood`
-- `thunderchat.bypass.caps`
-- `thunderchat.bypass.swear`
-- `thunderchat.bypass.advertisement`
+- `morghchat.bypass.filter`
+- `morghchat.bypass.spam`
+- `morghchat.bypass.flood`
+- `morghchat.bypass.caps`
+- `morghchat.bypass.swear`
+- `morghchat.bypass.advertisement`
 
 ### Filter alerts
 
-- `thunderchat.alert.*`
-- `thunderchat.alert.spam`
-- `thunderchat.alert.flood`
-- `thunderchat.alert.caps`
-- `thunderchat.alert.swear`
-- `thunderchat.alert.advertisement`
+- `morghchat.alert.*`
+- `morghchat.alert.spam`
+- `morghchat.alert.flood`
+- `morghchat.alert.caps`
+- `morghchat.alert.swear`
+- `morghchat.alert.advertisement`
 
 ### Spy
 
-Spy uses `thunderchat.command.spy`, section permissions, `thunderchat.spy.*`, `thunderchat.spy.autoenable`, and `thunderchat.bypass.spy`.
+Spy uses `morghchat.command.spy`, section permissions, `morghchat.spy.*`, `morghchat.spy.autoenable`, and `morghchat.bypass.spy`.
 
 Spy is intentionally local-only. A player never receives their own spy output.
 
@@ -252,26 +252,26 @@ Spy is intentionally local-only. A player never receives their own spy output.
 
 Chat Color permissions are dynamically registered per option, for example:
 
-- `thunderchat.chatcolor.color.red`
-- `thunderchat.chatcolor.color.*`
-- `thunderchat.chatcolor.gradient.rainbow`
-- `thunderchat.chatcolor.gradient.*`
-- `thunderchat.chatcolor.style.bold`
-- `thunderchat.chatcolor.style.*`
+- `morghchat.chatcolor.color.red`
+- `morghchat.chatcolor.color.*`
+- `morghchat.chatcolor.gradient.rainbow`
+- `morghchat.chatcolor.gradient.*`
+- `morghchat.chatcolor.style.bold`
+- `morghchat.chatcolor.style.*`
 - custom-format permission configured by the plugin
 
 ### Interactive chat
 
 Interactive permissions include:
 
-- `thunderchat.interactive.item`
-- `thunderchat.interactive.inventory`
-- `thunderchat.interactive.ender`
-- `thunderchat.interactive.player`
-- `thunderchat.interactive.commands`
-- `thunderchat.interactive.position`
-- `thunderchat.interactive.ping`
-- `thunderchat.interactive.custom`
+- `morghchat.interactive.item`
+- `morghchat.interactive.inventory`
+- `morghchat.interactive.ender`
+- `morghchat.interactive.player`
+- `morghchat.interactive.commands`
+- `morghchat.interactive.position`
+- `morghchat.interactive.ping`
+- `morghchat.interactive.custom`
 
 ## Moderation pipeline
 
@@ -283,7 +283,7 @@ Caps are normalized rather than hard-blocked: an all-caps message is converted t
 
 The swear list is configurable under `filter.swear.words` and contains English and Persian defaults. There is intentionally no separate blocked-words system; word-based moderation belongs in the swear section.
 
-Filter bypass permissions are independent, so `thunderchat.bypass.spam` does not automatically bypass flood, swear or advertisement checks.
+Filter bypass permissions are independent, so `morghchat.bypass.spam` does not automatically bypass flood, swear or advertisement checks.
 
 ## Spy
 
@@ -291,7 +291,7 @@ Spy is deliberately **local-only**.
 
 Supported spy sections include commands, private messages, anvils, signs and books.
 
-Spy output is styled separately from normal chat so staff can distinguish it easily. `thunderchat.bypass.spy` prevents a player's protected commands/PMs from being exposed.
+Spy output is styled separately from normal chat so staff can distinguish it easily. `morghchat.bypass.spy` prevents a player's protected commands/PMs from being exposed.
 
 ## Chat Color
 
@@ -303,7 +303,7 @@ Custom formatting is one-shot: the next message is consumed as the requested Min
 
 ## Interactive chat
 
-ThunderChat includes an InteractiveChat-style subsystem. Current placeholders/features include `[item]`, `[i]`, `[inv]`, `[ender]`, `[e]`, `[pos]`, `[ping]`, player names, command placeholders and configured custom placeholders.
+MorghChat includes an InteractiveChat-style subsystem. Current placeholders/features include `[item]`, `[i]`, `[inv]`, `[ender]`, `[e]`, `[pos]`, `[ping]`, player names, command placeholders and configured custom placeholders.
 
 Inventory previews are strictly read-only: click and drag interactions cannot take items from the snapshot.
 
@@ -321,7 +321,7 @@ Controls player-facing text and presentation wherever supported: channel formats
 
 ## Performance considerations
 
-ThunderChat keeps the gameplay hot path primarily in memory:
+MorghChat keeps the gameplay hot path primarily in memory:
 
 - concurrent filter/channel state
 - asynchronous batched persistence
@@ -359,7 +359,7 @@ Check:
 
 ### A player cannot use a channel
 
-Check the corresponding `thunderchat.channel.<channel>` permission and the channel's configured permission node.
+Check the corresponding `morghchat.channel.<channel>` permission and the channel's configured permission node.
 
 ### A player can see a channel but cannot speak in it
 
@@ -385,18 +385,18 @@ The plugin JAR is generated in `build/libs/`.
 
 ## Credits and third-party notices
 
-ThunderChat uses/adapts ideas and source from open-source projects where their licenses permit it. See `THIRD_PARTY_NOTICES.md` for detailed attribution and license information.
+MorghChat uses/adapts ideas and source from open-source projects where their licenses permit it. See `THIRD_PARTY_NOTICES.md` for detailed attribution and license information.
 
 In particular:
 
 - **InteractiveChat** — LOOHP / InteractiveChat
 - **CleanStaffChat** — credited for inspiration used for staff-list presentation
 
-ThunderChat is GPLv3. Consult the repository license and third-party notices before redistributing modified builds.
+MorghChat is GPLv3. Consult the repository license and third-party notices before redistributing modified builds.
 
 ## Development notes
 
-ThunderChat is designed as a modular Paper plugin with separate managers for chat, filtering, network messaging, persistence, spy, interactive chat and Chat Color.
+MorghChat is designed as a modular Paper plugin with separate managers for chat, filtering, network messaging, persistence, spy, interactive chat and Chat Color.
 
 When adding a feature, prefer configuration in `config.yml`, player-facing text in `messages.yml`, Adventure Components/MiniMessage for formatting, asynchronous I/O for persistent storage, and the unified network dispatcher for cross-backend state/messages.
 

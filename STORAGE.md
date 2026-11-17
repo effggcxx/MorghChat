@@ -1,37 +1,37 @@
-# ThunderChat Storage
+# MorghChat Storage
 
-ThunderChat is designed to work with or without MySQL.
+MorghChat is designed to work with or without MySQL.
 
 ## MySQL mode
 
-When `storage.type: mysql` is configured, ThunderChat attempts to connect to the configured MySQL/MariaDB server during startup.
+When `storage.type: mysql` is configured, MorghChat attempts to connect to the configured MySQL/MariaDB server during startup.
 
 If the connection succeeds:
 
 - HikariCP is used for pooled JDBC connections.
 - The configured database is created automatically when the MySQL account has permission.
-- ThunderChat tables are created automatically.
+- MorghChat tables are created automatically.
 - Persistent state uses the shared MySQL database.
 - Network packets for empty backends can use the persistent MySQL queue.
 
-A proxy network should normally use **one shared ThunderChat database** for all Paper backends. Each backend only changes `network.server-name`.
+A proxy network should normally use **one shared MorghChat database** for all Paper backends. Each backend only changes `network.server-name`.
 
 ## Automatic fallback
 
 MySQL is **not a hard dependency for running the plugin**.
 
-If MySQL is configured but cannot be reached, ThunderChat detects the failure and prints a clearly visible red console warning. When `storage.fallback: yaml` is enabled (the default), managers automatically use their existing local YAML persistence paths instead.
+If MySQL is configured but cannot be reached, MorghChat detects the failure and prints a clearly visible red console warning. When `storage.fallback: yaml` is enabled (the default), managers automatically use their existing local YAML persistence paths instead.
 
 The plugin continues to start and normal chat/moderation features remain available.
 
 Example warning:
 
 ```text
-[ThunderChat] WARNING: MySQL is unavailable.
-[ThunderChat] Falling back to local YAML storage. The plugin will continue running without MySQL.
+[MorghChat] WARNING: MySQL is unavailable.
+[MorghChat] Falling back to local YAML storage. The plugin will continue running without MySQL.
 ```
 
-The fallback is intentionally automatic. Server owners do not need to install MySQL just to start ThunderChat during development or on a standalone server.
+The fallback is intentionally automatic. Server owners do not need to install MySQL just to start MorghChat during development or on a standalone server.
 
 ## Configuration
 
@@ -42,7 +42,7 @@ storage:
   mysql:
     host: "127.0.0.1"
     port: 3306
-    database: "thunderchat"
+    database: "morghchat"
     username: "root"
     password: "change-me"
     pool-size: 4
@@ -71,7 +71,7 @@ In particular, when MySQL is unavailable:
 - the persistent empty-backend network queue is unavailable;
 - shared cross-server persistence cannot be guaranteed.
 
-Once MySQL is restored, restart ThunderChat (or restart the backend) so the MySQL storage layer is initialized again.
+Once MySQL is restored, restart MorghChat (or restart the backend) so the MySQL storage layer is initialized again.
 
 ## Recommended deployments
 
@@ -90,10 +90,10 @@ Velocity
    ├── skyblock
    └── bedwars
           │
-          └── MySQL: thunderchat
+          └── MySQL: morghchat
 ```
 
-Do **not** create one ThunderChat database per gamemode unless you intentionally want isolated installations.
+Do **not** create one MorghChat database per gamemode unless you intentionally want isolated installations.
 
 ## Performance
 
