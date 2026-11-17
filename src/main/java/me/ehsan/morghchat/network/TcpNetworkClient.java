@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 /** Reconnecting TCP client used by Paper backends to communicate with MorghChatVelocity. */
 final class TcpNetworkClient implements AutoCloseable {
@@ -23,15 +24,17 @@ final class TcpNetworkClient implements AutoCloseable {
     private final String host;
     private final int port;
     private final String secret;
+    private final Consumer<byte[]> receiveHandler;
     private final ArrayBlockingQueue<byte[]> outbound = new ArrayBlockingQueue<>(OUTBOUND_QUEUE_SIZE);
     private final AtomicBoolean running = new AtomicBoolean(true);
     private final Thread connectionThread;
 
-    TcpNetworkClient(MorghChat plugin, String host, int port, String secret) {
+    TcpNetworkClient(MorghChat plugin, String host, int port, String secret, Consumer<byte[]> receiveHandler) {
         this.plugin = plugin;
         this.host = host;
         this.port = port;
         this.secret = secret;
+        this.receiveHandler = receiveHandler;
         connectionThread = new Thread(this::connectionLoop, "MorghChat-TCP-connection");
         connectionThread.setDaemon(true);
         connectionThread.start();
@@ -87,7 +90,7 @@ final class TcpNetworkClient implements AutoCloseable {
                 if (length < 1 || length > MAX_PACKET_SIZE) throw new IOException("Invalid proxy packet length: " + length);
                 byte[] packet = input.readNBytes(length);
                 if (packet.length != length) throw new EOFException("Truncated proxy packet");
-                plugin.getNetworkMessenger().dispatchTcp(packet);
+                receiveHandler.accept(packet);
             }
         } catch (IOException exception) {
             if (running.get()) plugin.getLogger().fine("MorghChat proxy connection closed: " + exception.getMessage());
