@@ -34,4 +34,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MorghChat
-          path: build/libs/*.jar
+          path: |
+            build/libs/*.jar
+            velocity/build/libs/*.jar
