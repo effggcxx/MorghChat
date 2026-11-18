@@ -236,9 +236,24 @@ public final class GlobalChatManager {
     }
     private String getFormat(Channel channel) {
         String configured = plugin.getPluginConfig().getString("format.channels." + channel.id());
-        if (configured != null && !configured.isEmpty()) return configured;
-        if (channel == Channel.LOCAL) return plugin.getPluginConfig().getString("format.normal", "{prefix}<reset>{player}<gray>: <white>{message}");
-        return plugin.getPluginConfig().getString("format.global", "<gray>[{channel}] <gray>[{server}] {prefix}<reset>{player}<gray>: <white>{message}");
+        if (configured == null || configured.isEmpty()) {
+            configured = channel == Channel.LOCAL
+                    ? plugin.getPluginConfig().getString("format.normal", "{prefix}<reset>{player}<gray>: <white>{message}")
+                    : plugin.getPluginConfig().getString("format.global", "<gray>[{channel}] <gray>[{server}] {prefix}<reset>{player}<gray>: <white>{message}");
+        }
+
+        // Older/custom channel formats may contain only a channel label and message.
+        // Keep player identity and LuckPerms prefix visible on every channel.
+        if (!configured.contains("{prefix}")) {
+            if (configured.contains("{player}")) {
+                configured = configured.replace("{player}", "{prefix}<reset>{player}");
+            } else if (configured.contains("{message}")) {
+                configured = configured.replace("{message}", "{prefix}<reset>{player}<gray>: {message}");
+            }
+        } else if (!configured.contains("{player}") && configured.contains("{message}")) {
+            configured = configured.replace("{message}", "<reset>{player}<gray>: {message}");
+        }
+        return configured;
     }
     private Component format(String format, Channel channel, String server, String prefix, String player, Component message, Player placeholderPlayer) {
         String resolved = format.replace("{channel}", channel.display()).replace("{server}", server).replace("{player}", player);
