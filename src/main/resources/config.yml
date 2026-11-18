@@ -14,11 +14,17 @@ format:
     highrank: "<bold><gold>HighRank</gold> <yellow>Chat</yellow> <dark_gray>•</dark_gray></bold> <white>{message}</white>"
 network:
   enabled: true
+  # Use "tcp" with the MorghChatVelocity companion, or "bungee" for legacy forwarding.
+  transport: tcp
   server-name: "skymine"
   servers:
     - "skymine"
     - "bedwars"
   queue-retention-minutes: 1440
+  tcp:
+    host: "127.0.0.1"
+    port: 25590
+    secret: "CHANGE_THIS_TO_THE_SAME_RANDOM_SECRET_AS_THE_VELOCITY_PROXY"
 channels:
   default: local
   global:

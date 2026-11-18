@@ -60,7 +60,7 @@ storage:
 
 On another backend, `network.server-name` might be `skyblock`, while the database remains `morghchat`.
 
-The shared database is intentional: it provides one source of truth for persistent player state and the cross-backend fallback queue. Backend-specific state is identified using the network server name where necessary.
+The shared database is intentional: it provides one source of truth for persistent player state. The legacy Bungee transport can additionally use its MySQL fallback queue; TCP mode routes live packets through the Velocity companion instead. Backend-specific state is identified using the network server name where necessary.
 
 ## Channels
 
@@ -146,26 +146,42 @@ MorghChat uses a unified versioned `MorghChat` network dispatcher rather than se
 
 Network packets cover chat, clear, mute, alerts, ignore and private messages. Packet identifiers prevent duplicate delivery when a live packet and its queued fallback both exist.
 
-### Empty backends
+### Velocity TCP bridge
 
-Bungee-style backend messaging traditionally needs an online player to carry a plugin message. MorghChat uses the shared MySQL queue as a fallback for configured backend servers.
+MorghChat now includes a companion plugin for Velocity. In TCP mode, Paper backends connect directly to the proxy bridge, so sending network packets does not depend on an online player or Redis.
+
+Install `MorghChatVelocity` on the Velocity proxy and `MorghChat` on every Paper backend. Build both artifacts from the repository root:
+
+```bash
+gradle build
+```
+
+The Paper JAR is in `build/libs/`; the Velocity companion JAR is in `velocity/build/libs/`.
+
+On the first proxy startup, the companion creates `plugins/morghchatvelocity/config.properties`. Change its secret to a random value of at least 32 characters:
+
+```properties
+bind=127.0.0.1
+port=25590
+secret=replace-with-a-long-random-secret-value
+```
+
+Use the same host, port, and secret in every Paper backend:
 
 ```yaml
 network:
   enabled: true
+  transport: tcp
   server-name: "survival"
-  servers:
-    - "survival"
-    - "skyblock"
-    - "bedwars"
-  queue-retention-minutes: 1440
+  tcp:
+    host: "127.0.0.1"
+    port: 25590
+    secret: "replace-with-a-long-random-secret-value"
 ```
 
-`network.servers` contains **backend identifiers**, not databases. All listed backends can use the same MySQL database.
+If the proxy and Paper backends run on different machines, bind the proxy bridge to a private interface and firewall the port so only your backend machines can connect. The shared secret authenticates connections but does not encrypt traffic; use a trusted private network. The bridge forwards packets to every other connected backend. MySQL remains the shared persistent store for player state; Redis is not required.
 
-If a backend is empty, applicable packets remain queued until a player joins. This prevents ordinary chat/PM/mute/clear operations from being silently lost because a backend temporarily has zero players.
-
-A future proxy-side implementation could remove the remaining dependency on backend carrier messaging entirely.
+For legacy setups, `network.transport: bungee` retains the previous BungeeCord plugin-message transport and MySQL queue fallback.
 
 ## Commands
 
