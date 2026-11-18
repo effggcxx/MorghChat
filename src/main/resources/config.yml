@@ -7,11 +7,11 @@ format:
   global: "<gray>[<reset>{channel}<gray>]</gray> <gray>[<reset>{server}<gray>]</gray> {prefix}<reset>{player}<gray>: <white>{message}"
   channels:
     local: "{prefix}<reset>{player}<gray>: <white>{message}"
-    global: "<bold><dark_blue>GLOBAL</dark_blue> <aqua>Chat</aqua> <dark_gray>•</dark_gray></bold> <white>{message}</white>"
-    staff: "<bold><dark_purple>Staff</dark_purple> <light_purple>Chat</light_purple> <dark_gray>•</dark_gray></bold> <white>{message}</white>"
-    donator: "<bold><dark_green>Donator</dark_green> <green>Chat</green> <dark_gray>•</dark_gray></bold> <white>{message}</white>"
-    admin: "<bold><dark_red>Admin</dark_red> <red>Chat</red> <dark_gray>•</dark_gray></bold> <white>{message}</white>"
-    highrank: "<bold><gold>HighRank</gold> <yellow>Chat</yellow> <dark_gray>•</dark_gray></bold> <white>{message}</white>"
+    global: "<bold><dark_blue>GLOBAL</dark_blue> <aqua>Chat</aqua> <dark_gray>•</dark_gray></bold> {prefix}<reset>{player}<gray>: <white>{message}</white>"
+    staff: "<bold><dark_purple>Staff</dark_purple> <light_purple>Chat</light_purple> <dark_gray>•</dark_gray></bold> {prefix}<reset>{player}<gray>: <white>{message}</white>"
+    donator: "<bold><dark_green>Donator</dark_green> <green>Chat</green> <dark_gray>•</dark_gray></bold> {prefix}<reset>{player}<gray>: <white>{message}</white>"
+    admin: "<bold><dark_red>Admin</dark_red> <red>Chat</red> <dark_gray>•</dark_gray></bold> {prefix}<reset>{player}<gray>: <white>{message}</white>"
+    highrank: "<bold><gold>HighRank</gold> <yellow>Chat</yellow> <dark_gray>•</dark_gray></bold> {prefix}<reset>{player}<gray>: <white>{message}</white>"
 network:
   enabled: true
   # Use "tcp" with the MorghChatVelocity companion, or "bungee" for legacy forwarding.
